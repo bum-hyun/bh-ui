@@ -11,7 +11,7 @@ interface IButton extends HTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
 }
 
-type IVariant = "primary" | "secondary";
+type IVariant = "primary" | "secondary" | "tertiary";
 type ISize = "small" | "medium" | "large";
 
 export const Button = ({ variant, label, size, fullWidth = false, loading = false, ...props }: IButton) => {
@@ -65,6 +65,16 @@ const getVariant = ({ variant = "primary", theme }: { variant?: IVariant; theme:
 
       :hover:not(:disabled),
       :active:not(:disabled) {
+        background-color: ${theme.colors.secondary};
+      }
+    `;
+  } else if (variant === "tertiary") {
+    return css`
+      color: ${theme.colors.primary};
+      background-color: #f6f0ff;
+      border: 1px solid #f6f0ff;
+
+      :hover:not(:disabled) {
         background-color: ${theme.colors.secondary};
       }
     `;

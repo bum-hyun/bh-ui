@@ -1,8 +1,6 @@
 import React, { HTMLAttributes } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import RadioButton from "./RadioButton";
-import { Button } from "@stories/Button/Button";
 
 export const RadioContext = React.createContext<{ value?: string | number; onChange?: (event: RadioChangeEvent) => void }>({});
 export type RadioChangeEvent = React.ChangeEvent<HTMLInputElement>;
@@ -45,7 +43,7 @@ const RadioGroupContainer = styled.div<{ direction?: "horizontal" | "vertical" }
           }
         `
       : css`
-          display: flex;
+          display: inline-flex;
           flex-direction: column;
           > label + label {
             margin-top: 0.75rem;
