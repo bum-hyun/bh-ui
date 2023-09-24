@@ -19,6 +19,10 @@ type Story = StoryObj<typeof Button>;
 export const Primary: Story = {
   args: {
     label: "Button",
+    variant: "primary",
+    size: "medium",
+    fullWidth: false,
+    loading: false,
   },
 };
 
