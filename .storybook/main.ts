@@ -23,7 +23,8 @@ const config: StorybookConfig = {
         allowSyntheticDefaultImports: false,
         esModuleInterop: false,
       },
-      propFilter: () => true,
+      propFilter: (propInfo) =>
+        propInfo && propInfo.parent && !propInfo.parent.fileName.includes('/node_modules/'),
     },
   },
 };

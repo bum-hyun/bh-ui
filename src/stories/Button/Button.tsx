@@ -4,48 +4,62 @@ import { css, Theme } from "@emotion/react";
 import { Spinner } from "../Spinner/Spinner";
 
 interface IButton extends HTMLAttributes<HTMLButtonElement> {
-  variant?: IVariant;
+  variant?: "primary" | "secondary" | "tertiary" | "text";
   label: string;
-  size?: ISize;
+  size?: "small" | "medium" | "large";
   fullWidth?: boolean;
   loading?: boolean;
+  disabled?: boolean;
+  startAdornment?: React.ReactNode;
+  endAdornment?: React.ReactNode;
 }
 
-type IVariant = "primary" | "secondary" | "tertiary";
-type ISize = "small" | "medium" | "large";
-
-export const Button = ({ variant, label, size, fullWidth = false, loading = false, ...props }: IButton) => {
+/**
+ 버튼 컴포넌트
+ */
+export const Button = ({ variant = "primary", label, size = "medium", fullWidth = true, loading = false, disabled = false, startAdornment, endAdornment }: IButton) => {
   return (
-    <Container variant={variant} size={size} fullWidth={fullWidth} {...props}>
+    <Container variant={variant} size={size} fullWidth={fullWidth} disabled={disabled} startAdornment={!!startAdornment} endAdornment={!!endAdornment}>
+      {startAdornment && <AdornmentWrap position={"left"}>{startAdornment}</AdornmentWrap>}
       {loading ? <Spinner size={4} /> : label}
+      {endAdornment && <AdornmentWrap position={"right"}>{endAdornment}</AdornmentWrap>}
     </Container>
   );
 };
 
-Button.defaultProps = {
-  variant: "primary" as IVariant,
-  size: "medium" as ISize,
-  label: "Button",
-};
-
-const Container = styled.button<{ variant?: IVariant; size?: ISize; width?: number; fullWidth?: boolean }>`
+const Container = styled.button<{ variant?: string; size?: string; width?: number; fullWidth?: boolean; startAdornment: boolean; endAdornment: boolean }>`
   display: inline-flex;
   justify-content: center;
   align-items: center;
   width: ${(p) => p.fullWidth && "100%"};
   padding: 0 16px;
+  ${(p) => p.startAdornment && "padding-left: 40px; !important;"}
+  ${(p) => p.endAdornment && "padding-right: 40px; !important;"}
   border-radius: 6px;
-
-  :disabled {
-    color: #adb0ba;
-    background-color: #e4e4e4;
-  }
 
   ${(p) => getVariant(p)}
   ${(p) => getSize(p)}
+  
+  :disabled {
+    color: #adb0ba;
+    background-color: #e4e4e4;
+    border-color: #e4e4e4;
+  }
 `;
 
-const getVariant = ({ variant = "primary", theme }: { variant?: IVariant; theme: Theme }) => {
+const AdornmentWrap = styled.div<{ position: "left" | "right" }>`
+  position: absolute;
+  top: 50%;
+  ${(p) => (p.position === "left" ? "left: 0;" : "right: 0;")}
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  transform: translateY(-50%);
+`;
+
+const getVariant = ({ variant, theme }: { variant?: string; theme: Theme }) => {
   if (variant === "primary") {
     return css`
       color: #fff;
@@ -78,10 +92,20 @@ const getVariant = ({ variant = "primary", theme }: { variant?: IVariant; theme:
         background-color: ${theme.colors.secondary};
       }
     `;
+  } else if (variant === "text") {
+    return css`
+      color: ${theme.colors.primary};
+      border: 1px solid transparent;
+
+      :hover:not(:disabled),
+      :active:not(:disabled) {
+        background-color: ${theme.colors.secondary};
+      }
+    `;
   }
 };
 
-const getSize = ({ size = "medium" }: { size?: ISize }) => {
+const getSize = ({ size }: { size?: string }) => {
   if (size === "small") {
     return css`
       font-size: 12px;
