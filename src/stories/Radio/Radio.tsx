@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useEffect, useRef, useState } from "react";
+import React, { HTMLAttributes, useContext, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { RadioChangeEvent, RadioContext } from "./RadioGroup";
 
@@ -8,7 +8,7 @@ interface IRadio extends HTMLAttributes<HTMLLabelElement> {
 }
 
 const Radio = ({ label, value, ...props }: IRadio) => {
-  const data = React.useContext(RadioContext);
+  const data = useContext(RadioContext);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [checked, setChecked] = useState(false);
 

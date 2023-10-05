@@ -5,25 +5,31 @@ import { Icon } from "../Icon/Icon";
 import { css, Theme } from "@emotion/react";
 import { createPortal } from "react-dom";
 
+export const SelectContext = React.createContext<{ value?: string | number }>({});
+export type SelectChangeEvent = React.ChangeEvent<HTMLInputElement>;
+
 interface ISelect extends HTMLAttributes<HTMLDivElement> {
-  /** 보여주고 싶은 이름 */
   label: string;
   value: string | number;
+  onChange: (event: SelectChangeEvent) => void;
+  children: React.ReactNode[];
 }
 
-/**
- * 안녕하세요 라고 보여주고 싶을 땐 `Hello` 컴포넌트를 사용하세요.
- *
- * - `big` 값을 `true`로 설정하면 **크게** 나타납니다.
- * - `onHello` 와 `onBye` props로 설정하여 버튼이 클릭했을 때 호출 할 함수를 지정 할 수 있습니다.
- */
-const Select = ({ label, value, ...props }: ISelect) => {
+const Select = ({ label, value, onChange, children, ...props }: ISelect) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [currentLabel, setCurrentLabel] = useState(label);
 
   const handleClickContainer = (event: React.MouseEvent) => {
     event.stopPropagation();
     setIsOpen(true);
+  };
+
+  const handleChange = (event: React.ChangeEvent<any>) => {
+    const newEvent = { ...event, target: { ...event.target, value: event.target.dataset.value } };
+    onChange(newEvent);
+    setIsOpen(false);
+    setCurrentLabel(event.target.innerText);
   };
 
   const RenderMenu = () => {
@@ -45,23 +51,22 @@ const Select = ({ label, value, ...props }: ISelect) => {
             left: ${`${x}px`};
             width: ${`${width}px`};
           `}
-          onClick={() => setIsOpen(false)}
+          onClick={handleChange}
         >
-          <Menu>1번</Menu>
-          <Menu>2번</Menu>
+          {children}
         </MenuWrap>
       </Root>
     );
   };
 
   return (
-    <>
+    <SelectContext.Provider value={{ value }}>
       <Container ref={ref} onClick={handleClickContainer} {...props}>
-        <Text>{label}</Text>
+        <Text>{currentLabel}</Text>
         <Icon icon={"chevronDown"} color={"#bababa"} />
       </Container>
       {isOpen && createPortal(RenderMenu(), document.body)}
-    </>
+    </SelectContext.Provider>
   );
 };
 
@@ -116,63 +121,4 @@ const MenuWrap = styled.ul`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   overflow-x: hidden;
   overflow-y: auto;
-`;
-
-const Menu = styled.div<{ active?: boolean }>`
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  font-size: 15px;
-  color: #212121;
-  height: 40px;
-  background-color: ${(p) => (p.active ? "#f6f0ff" : "#fff")};
-  user-select: none;
-  cursor: pointer;
-  z-index: 100;
-
-  :hover {
-    background-color: #f6f0ff;
-  }
-`;
-
-const Inner = styled.span<{ active?: boolean }>`
-  position: relative;
-  width: 18px;
-  height: 18px;
-  border: 1.5px solid ${(p) => (p.active ? "#8136fe" : "#c6c8d0")};
-  border-radius: 100%;
-  transition: all 0.1s linear;
-
-  ::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 10px;
-    height: 10px;
-    transform: translate(-50%, -50%);
-    background-color: ${(p) => (p.active ? "#8136fe" : "none")};
-    border-radius: 100%;
-    transition: all 0.1s linear;
-  }
-`;
-
-const Label = styled.span`
-  margin-left: 0.75rem;
-  font-size: 15px;
-  line-height: 18px;
-  color: #4e515c;
-`;
-
-const Input = styled.input`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  z-index: 1;
-  opacity: 0;
-  cursor: inherit;
 `;
