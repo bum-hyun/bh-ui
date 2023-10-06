@@ -12,14 +12,25 @@ interface IButton extends HTMLAttributes<HTMLButtonElement> {
   disabled?: boolean;
   startAdornment?: React.ReactNode;
   endAdornment?: React.ReactNode;
+  shape?: "square" | "default" | "circle";
 }
 
 /**
  버튼 컴포넌트
  */
-export const Button = ({ variant = "primary", label, size = "medium", fullWidth = true, loading = false, disabled = false, startAdornment, endAdornment }: IButton) => {
+export const Button = ({
+  variant = "primary",
+  label,
+  size = "medium",
+  shape = "default",
+  fullWidth = true,
+  loading = false,
+  disabled = false,
+  startAdornment,
+  endAdornment,
+}: IButton) => {
   return (
-    <Container variant={variant} size={size} fullWidth={fullWidth} disabled={disabled} startAdornment={!!startAdornment} endAdornment={!!endAdornment}>
+    <Container variant={variant} size={size} shape={shape} fullWidth={fullWidth} disabled={disabled} startAdornment={!!startAdornment} endAdornment={!!endAdornment}>
       {startAdornment && <AdornmentWrap position={"left"}>{startAdornment}</AdornmentWrap>}
       {loading ? <Spinner size={4} /> : label}
       {endAdornment && <AdornmentWrap position={"right"}>{endAdornment}</AdornmentWrap>}
@@ -27,7 +38,7 @@ export const Button = ({ variant = "primary", label, size = "medium", fullWidth 
   );
 };
 
-const Container = styled.button<{ variant?: string; size?: string; width?: number; fullWidth?: boolean; startAdornment: boolean; endAdornment: boolean }>`
+const Container = styled.button<{ variant?: string; size?: string; shape?: string; width?: number; fullWidth?: boolean; startAdornment: boolean; endAdornment: boolean }>`
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -35,10 +46,11 @@ const Container = styled.button<{ variant?: string; size?: string; width?: numbe
   padding: 0 16px;
   ${(p) => p.startAdornment && "padding-left: 40px; !important;"}
   ${(p) => p.endAdornment && "padding-right: 40px; !important;"}
-  border-radius: 6px;
 
   ${(p) => getVariant(p)}
   ${(p) => getSize(p)}
+  ${(p) => getShape(p)}
+  
   
   :disabled {
     color: #adb0ba;
@@ -120,6 +132,22 @@ const getSize = ({ size }: { size?: string }) => {
     return css`
       font-size: 16px;
       height: 48px;
+    `;
+  }
+};
+
+const getShape = ({ shape }: { shape?: string }) => {
+  if (shape === "default") {
+    return css`
+      border-radius: 6px;
+    `;
+  } else if (shape === "square") {
+    return css`
+      border-radius: 0;
+    `;
+  } else if (shape === "circle") {
+    return css`
+      border-radius: 100px;
     `;
   }
 };

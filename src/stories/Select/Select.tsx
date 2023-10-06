@@ -2,20 +2,20 @@
 import React, { HTMLAttributes, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { Icon } from "../Icon/Icon";
-import { css, Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 import { createPortal } from "react-dom";
 
 export const SelectContext = React.createContext<{ value?: string | number }>({});
 export type SelectChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
 interface ISelect extends HTMLAttributes<HTMLDivElement> {
-  label: string;
+  label?: string;
   value: string | number;
   onChange: (event: SelectChangeEvent) => void;
   children: React.ReactNode[];
 }
 
-const Select = ({ label, value, onChange, children, ...props }: ISelect) => {
+const Select = ({ label = "선택", value, onChange, children, ...props }: ISelect) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [currentLabel, setCurrentLabel] = useState(label);

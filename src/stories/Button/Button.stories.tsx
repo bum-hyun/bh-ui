@@ -10,6 +10,7 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: { options: ["primary", "secondary"], control: { type: "select" } },
     size: { options: ["small", "medium", "large"], control: { type: "select" } },
+    shape: { options: ["default", "square", "circle"], control: { type: "select" } },
     fullWidth: { control: "boolean" },
     loading: { control: "boolean" },
     disabled: { control: "boolean" },
@@ -24,6 +25,7 @@ export const Primary: Story = {
     label: "Button",
     variant: "primary",
     size: "medium",
+    shape: "default",
     fullWidth: true,
     loading: false,
     disabled: false,

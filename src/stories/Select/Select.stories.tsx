@@ -13,14 +13,11 @@ export default meta;
 type Story = StoryObj<typeof Select>;
 
 export const Default: Story = {
-  args: {
-    label: "선택된 정보",
-  },
   render: (args) => {
     const [age, setAge] = useState("");
 
     return (
-      <Select label={"선택"} value={age} onChange={(event) => setAge(event.target.value)}>
+      <Select value={age} onChange={(event) => setAge(event.target.value)}>
         <SelectItem value={10}>Ten</SelectItem>
         <SelectItem value={20}>Twenty</SelectItem>
         <SelectItem value={30}>Thirty</SelectItem>
